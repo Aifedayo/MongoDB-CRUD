@@ -65,16 +65,39 @@ def find_specific_key(person):
     printer.pprint(person)
 
 
+def count_all_people():
+    count = person_collection.count_documents({})
+    print(f"Total people: {count}")
 
 
+def get_person_by_id(person_id):
+    from bson.objectid import ObjectId
 
+    _id = ObjectId(person_id)
+    person = person_collection.find_one({"_id": _id})
+    printer.pprint(person)
+
+
+def get_age_range(min_age, max_age):
+    query = {
+        {"$and": [
+            {"age": {"$gte": min_age}},
+            {"age": {"$lte": max_age}}
+        ]}
+    }
+    people = person_collection.find(query).sort("age")
+
+    for person in people:
+        printer.pprint(person)
 
 
 
 if __name__ == "__main__":
     # insert_test_doc()
     # create_documents()
-    insert_into_documents(collection=person_collection, doc={"first_name": "Abdulmalik", "last_name": "Abdulazeez", "age": 2})
-    find_all_people()
-    find_specific_key("Abdulmalik")
-    
+    # insert_into_documents(collection=person_collection, doc={"first_name": "Abdulmalik", "last_name": "Abdulazeez", "age": 2})
+    # find_all_people()
+    # find_specific_key("Abdulmalik")
+    # count_all_people()
+    get_person_by_id("66f939d8f873e416256b34cc")
+    get_age_range(10, 15)

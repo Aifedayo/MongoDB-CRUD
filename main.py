@@ -79,6 +79,9 @@ def get_person_by_id(person_id):
 
 
 def get_age_range(min_age, max_age):
+    """
+    SELECT * FROM person WHERE age BETWEEN min_age AND max_age
+    """
     query = {"$and": [
             {"age": {"$gte": min_age}},
             {"age": {"$lte": max_age}}

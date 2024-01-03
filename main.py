@@ -79,12 +79,11 @@ def get_person_by_id(person_id):
 
 
 def get_age_range(min_age, max_age):
-    query = {
+    query = 
         {"$and": [
             {"age": {"$gte": min_age}},
             {"age": {"$lte": max_age}}
         ]}
-    }
     people = person_collection.find(query).sort("age")
 
     for person in people:

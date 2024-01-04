@@ -93,9 +93,23 @@ def get_age_range(min_age, max_age):
 
 
 def project_columns():
-    columns = {"_id": 0, "first_name": 1, "last_name": 1}
-    people = person_collection.find({}, columns=columns)
+    columns = {"_id": False, "first_name": True, "last_name": True}
+    people = person_collection.find({}, columns)
+    for person in people:
+        printer.pprint(person)
 
+
+def update_person_by_id(person_id):
+    from bson.objectid import ObjectId
+
+    _id = ObjectId(person_id)
+    all_updates = {
+        "$set": {"new_field": True}, 
+        "$set": {"middle_name": "Aderinmola"},
+        "$inc": {"age": 1},
+        "$rename": {"first_name": "first", "last_name": "last"}
+    }
+    person_collection.update_one({"_id": _id}, all_updates)
 
 
 if __name__ == "__main__":
@@ -105,5 +119,7 @@ if __name__ == "__main__":
     # find_all_people()
     # find_specific_key("Abdulmalik")
     # count_all_people()
-    get_person_by_id("66f939d8f873e416256b34cc")
-    get_age_range(10, 15)
+    # get_person_by_id("66f939d8f873e416256b34cc")
+    # get_age_range(10, 15)
+    project_columns()
+    update_person_by_id("66f939d8f873e416256b34cc")

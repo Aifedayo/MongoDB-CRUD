@@ -104,7 +104,6 @@ def update_person_by_id(person_id):
 
     _id = ObjectId(person_id)
     all_updates = {
-        "$set": {"new_field": True}, 
         "$set": {"middle_name": "Aderinmola"},
         "$inc": {"age": 1},
         "$rename": {"first_name": "first", "last_name": "last"}

@@ -112,6 +112,13 @@ def update_person_by_id(person_id):
     person_collection.update_one({"_id": _id}, {"$unset": {"middle_name": ""}})
 
 
+def replace_one_person_doc(person_id):
+    from bson.objectid import ObjectId
+
+    _id = ObjectId(person_id)
+    new_doc = {"first_name": "Abdulmalik", "last_name": "Lagundoye", "age": 2}
+    person_collection.replace_one({"_id": _id}, new_doc)
+
 if __name__ == "__main__":
     # insert_test_doc()
     # create_documents()
@@ -121,5 +128,6 @@ if __name__ == "__main__":
     # count_all_people()
     # get_person_by_id("66f939d8f873e416256b34cc")
     # get_age_range(10, 15)
-    project_columns()
-    update_person_by_id("66f939d8f873e416256b34cc")
+    # project_columns()
+    # update_person_by_id("66f939d8f873e416256b34cc")
+    replace_one_person_doc("66f94af6bbe3cd7e6c06b493")

@@ -119,6 +119,13 @@ def replace_one_person_doc(person_id, new_doc):
     person_collection.replace_one({"_id": _id}, new_doc)
 
 
+def delete_doc_by_person_id(person_id):
+    from bson.objectid import ObjectId
+
+    _id = ObjectId(person_id)
+    person_collection.delete_one({"_id": _id})
+
+
 
 
 if __name__ == "__main__":

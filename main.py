@@ -124,8 +124,25 @@ def delete_doc_by_person_id(person_id):
 
     _id = ObjectId(person_id)
     person_collection.delete_one({"_id": _id})
+    # person_collection.delete_many({"_id": _id})
 
+# ----------------------------------------------------------------
 
+address = {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "country": "USA",
+    "coordinates": {"type": "Point", "coordinates": [-74.0060, 40.7128]},
+    "phone_numbers": ["+1 123-456-7890", "+1 987-654-3210"],
+    "zip_code": "10001"
+}
+
+def add_address_embed(person_id, address):
+    from bson.objectid import ObjectId
+
+    _id = ObjectId(person_id)
+    person_collection.update_one({"_id": _id}, {"$addToSet": {"addresses": address}}) # To add as an array
 
 
 if __name__ == "__main__":
@@ -139,4 +156,5 @@ if __name__ == "__main__":
     # get_age_range(10, 15)
     # project_columns()
     # update_person_by_id("66f939d8f873e416256b34cc")
-    replace_one_person_doc("66f94af6bbe3cd7e6c06b493", {"first_name": "Abdulmalik", "last_name": "Lagundoye", "age": 2})
+    # replace_one_person_doc("66f94af6bbe3cd7e6c06b493", {"first_name": "Abdulmalik", "last_name": "Lagundoye", "age": 2})
+    add_address_embed("66f94af6bbe3cd7e6c06b493", address)

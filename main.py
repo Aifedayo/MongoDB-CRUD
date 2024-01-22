@@ -144,6 +144,16 @@ def add_address_embed(person_id, address):
     _id = ObjectId(person_id)
     person_collection.update_one({"_id": _id}, {"$addToSet": {"addresses": address}}) # To add as an array
 
+def add_address_relationship(person_id, address):
+    from bson.objectid import ObjectId
+
+    _id = ObjectId(person_id)
+
+    address = address.copy()
+    address["owner_id"] = person_id
+
+    address_collection = production.address
+    address_collection.insert_one(address)
 
 if __name__ == "__main__":
     # insert_test_doc()
@@ -157,4 +167,6 @@ if __name__ == "__main__":
     # project_columns()
     # update_person_by_id("66f939d8f873e416256b34cc")
     # replace_one_person_doc("66f94af6bbe3cd7e6c06b493", {"first_name": "Abdulmalik", "last_name": "Lagundoye", "age": 2})
-    add_address_embed("66f94af6bbe3cd7e6c06b493", address)
+    # add_address_embed("66f94af6bbe3cd7e6c06b493", address)
+    add_address_relationship("66f939d8f873e416256b34cb", address)
+

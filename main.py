@@ -51,9 +51,13 @@ def insert_into_documents(collection, doc):
     collection.insert_one(doc)
     return collection.id
 
+printer = pprint.PrettyPrinter()
 
 def find_all_people():
-    people
+    people = person_collection.find()
+
+    for person in people:
+        pprint.pprint(person)
 
 
 
@@ -68,4 +72,5 @@ def find_all_people():
 if __name__ == "__main__":
     # insert_test_doc()
     # create_documents()
-    insert_into_documents(collection=person_collection, doc={"first_name": "Abdurrahman", "last_name": "Lagundoye", "age": 6})
+    insert_into_documents(collection=person_collection, doc={"first_name": "Abdurraheem", "last_name": "Lagundoye", "age": 4})
+    find_all_people()

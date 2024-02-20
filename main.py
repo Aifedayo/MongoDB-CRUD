@@ -60,7 +60,9 @@ def find_all_people():
         pprint.pprint(person)
 
 
-
+def find_specific_key(person):
+    person = person_collection.find_one({"first_name": person})
+    printer.pprint(person)
 
 
 
@@ -72,5 +74,7 @@ def find_all_people():
 if __name__ == "__main__":
     # insert_test_doc()
     # create_documents()
-    insert_into_documents(collection=person_collection, doc={"first_name": "Abdurraheem", "last_name": "Lagundoye", "age": 4})
+    insert_into_documents(collection=person_collection, doc={"first_name": "Abdulmalik", "last_name": "Abdulazeez", "age": 2})
     find_all_people()
+    find_specific_key("Abdulmalik")
+    

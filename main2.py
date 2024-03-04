@@ -32,7 +32,7 @@ book_validator = {
                 }
             },
             "publish_year": {
-                "bsonType": "integer", 
+                "bsonType": "date", 
                 "minimum": 1900,
                 "description": "must be a date and is not empty"
             },
@@ -49,3 +49,13 @@ book_validator = {
     }
     "validationAction": "error"
 }
+
+# Create a book collection
+try:
+    # book collection = production.book_collection
+    production.create_collection("book_collection")
+except Exception as e:
+    print(f"Failed to create collection: {e}")
+
+
+production.command("collMod", "book_collection", validator=book_validator) # Modify collection

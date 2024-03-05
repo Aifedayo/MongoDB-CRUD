@@ -8,7 +8,7 @@ load_dotenv(find_dotenv())
 
 password = os.environ.get("MONGODB_PWD")
 
-connection_string = f"mongodb+srv://akeemifedayolag:{password}@tutorial-cluster.k5y6y.mongodb.net/?retryWrites=true&w=majority&appName=Tutorial-Cluster"
+connection_string = f"mongodb+srv://akeemifedayolag:{password}@tutorial-cluster.k5y6y.mongodb.net/?retryWrites=true&w=majority&appName=Tutorial-Cluster&authSource=admin"
 
 client = MongoClient(connection_string)
 dbs = client.list_database_names()
@@ -41,12 +41,12 @@ book_validator = {
                 "description": "Can only be one of: Fiction, Non-Fiction"    
             },
             "copies": {
-                "bsonType": "integer",
+                "bsonType": "int",
                 "minimum": 0,
                 "description": "must be a non-negative integer"
             }
         },
-    }
+    },
     "validationAction": "error"
 }
 

@@ -105,7 +105,7 @@ def create_data():
         {"first_name": "F.Scott", "last_name": "Fit", "birth_date": dt(1999, 3, 15), "nationality": "American"}
     ]
 
-    # Add bulk books
+    # Add bulk authors
     author_collection = production.author_collection
     author_ids = author_collection.insert_many(authors).inserted_ids
 

@@ -47,7 +47,25 @@ def create_documents():
 
     person_collection.insert_many(docs)
 
+def insert_into_documents(collection, doc):
+    collection.insert_one(doc)
+    return collection.id
+
+
+def find_all_people():
+    people
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     # insert_test_doc()
-    create_documents()
+    # create_documents()
+    insert_into_documents(collection=person_collection, doc={"first_name": "Abdurrahman", "last_name": "Lagundoye", "age": 6})

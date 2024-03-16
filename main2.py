@@ -109,6 +109,23 @@ def create_data():
     author_collection = production.author_collection
     author_ids = author_collection.insert_many(authors).inserted_ids
 
+    books = [
+        {"title": "Pride and Prejudice", "authors": [author_ids[0], author_ids[1]], "publish_year": dt(1913, 6, 1), "type": "Fiction", "copies": 200},
+        {"title": "Great Expectations", "authors": [author_ids[1]], "publish_year": dt(1916, 7, 1), "type": "Fiction", "copies": 250},
+        {"title": "To Kill a Mockingbird", "authors": [author_ids[2]], "publish_year": dt(1960, 6, 1), "type": "Fiction", "copies": 300},
+        {"title": "1984", "authors": [author_ids[3]], "publish_year": dt(1949, 6, 1), "type": "Non-Fiction", "copies": 50},
+        {"title": "But a Mockingbird", "authors": [author_ids[0]], "publish_year": dt(1916, 7, 1), "type": "Fiction", "copies": 24}
+    ]
+
+    # add bulk books
+    book_collection = production.book_collection
+    book_ids = book_collection.insert_many(books).inserted_ids
+
+    # Add book references to authors
+    author_collection.update_many({}, {"$set": {"books": list(book_ids)}})
+
+    print("Data added successfully")
+
 
 
 if __name__ == "__main__":

@@ -1,22 +1,24 @@
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime as dt
 import os
-import pprint
-
+import pymongo
 from pymongo import MongoClient
+from bson import datetime as bson_dt
 
+# Load environment variables
 load_dotenv(find_dotenv())
-
 password = os.environ.get("MONGODB_PWD")
-
 connection_string = f"mongodb+srv://akeemifedayolag:{password}@tutorial-cluster.k5y6y.mongodb.net/?retryWrites=true&w=majority&appName=Tutorial-Cluster&authSource=admin"
 
+# MongoDB client
 client = MongoClient(connection_string)
-dbs = client.list_database_names()
-production = (client.production)
+production = client.production
 
-def create_book_collection():
-    # SCHEME VALIDATION
+
+def create_book_validation():
+    """
+    Create the book collection with validation schema.
+    """
     book_validator = {
         "$jsonSchema": {
             "bsonType": "object",
@@ -30,17 +32,16 @@ def create_book_collection():
                     "bsonType": "array",
                     "items": {
                         "bsonType": "objectId",
-                        "description": "must be a objectId and is not empty"
+                        "description": "must be an objectId and is not empty"
                     }
                 },
                 "publish_year": {
-                    "bsonType": "date", 
-                    "minimum": 1900,
+                    "bsonType": "date",
                     "description": "must be a date and is not empty"
                 },
                 "type": {
                     "enum": ["Fiction", "Non-Fiction"],
-                    "description": "Can only be one of: Fiction, Non-Fiction"    
+                    "description": "Can only be one of: Fiction, Non-Fiction"
                 },
                 "copies": {
                     "bsonType": "int",
@@ -52,18 +53,20 @@ def create_book_collection():
         "validationAction": "error"
     }
 
-    # Create a book collection
     try:
-        # book collection = production.book_collection
         production.create_collection("book_collection")
+        production.command("collMod", "book_collection", validator=book_validator)
+        print("Book collection created successfully with validation.")
+    except pymongo.errors.CollectionInvalid:
+        print("Book collection already exists.")
     except Exception as e:
-        print(f"Failed to create collection: {e}")
+        print(f"Failed to create or modify book collection: {e}")
 
 
-    production.command("collMod", "book_collection", validator=book_validator) # Modify collection
-
-
-def create_author_collection():
+def create_author_validation():
+    """
+    Create the author collection with validation schema.
+    """
     author_validator = {
         "$jsonSchema": {
             "bsonType": "object",
@@ -78,8 +81,8 @@ def create_author_collection():
                     "description": "must be a string and is not empty"
                 },
                 "birth_date": {
-                    "bsonType": "date", 
-                    "description": "must be a date and is not empty"
+                    "bsonType": "date",
+                    "description": "must be a date"
                 },
                 "nationality": {
                     "bsonType": "string",
@@ -89,25 +92,38 @@ def create_author_collection():
         },
         "validationAction": "error"
     }
+
     try:
-        production.create_collection("author_collection", validator=author_validator)
+        production.create_collection("author_collection")
+        production.command("collMod", "author_collection", validator=author_validator)
+        print("Author collection created successfully with validation.")
+    except pymongo.errors.CollectionInvalid:
+        print("Author collection already exists.")
     except Exception as e:
-        print(f"Failed to create collection: {e}")
+        print(f"Failed to create or modify author collection: {e}")
 
 
 def create_data():
-    # Add bulk authors
+    """
+    Insert sample data into author and book collections.
+    """
     authors = [
         {"first_name": "Jane", "last_name": "Austen", "birth_date": dt(1975, 10, 18), "nationality": "British"},
         {"first_name": "Charles", "last_name": "Dickens", "birth_date": dt(1912, 7, 15), "nationality": "British"},
         {"first_name": "Mark", "last_name": "Twain", "birth_date": dt(1935, 11, 15), "nationality": "American"},
         {"first_name": "Ernest", "last_name": "Hemingway", "birth_date": dt(1899, 3, 15), "nationality": "American"},
-        {"first_name": "F.Scott", "last_name": "Fit", "birth_date": dt(1999, 3, 15), "nationality": "American"}
+        {"first_name": "F.Scott", "last_name": "Fit", "birth_date": dt(1999, 3, 15), "nationality": "American"},
+        {"first_name": "M.Mark", "last_name": "Predict", "birth_date": dt(1991, 7, 15), "nationality": "Nigerian"}
     ]
 
-    # Add bulk authors
-    author_collection = production.author_collection
-    author_ids = author_collection.insert_many(authors).inserted_ids
+
+    try:
+        author_collection = production.author_collection
+        author_ids = author_collection.insert_many(authors).inserted_ids
+        print("Authors inserted successfully.")
+    except pymongo.errors.BulkWriteError as e:
+        print(f"Bulk write failed: {e.details}")
+        return
 
     books = [
         {"title": "Pride and Prejudice", "authors": [author_ids[0], author_ids[1]], "publish_year": dt(1913, 6, 1), "type": "Fiction", "copies": 200},
@@ -117,16 +133,15 @@ def create_data():
         {"title": "But a Mockingbird", "authors": [author_ids[0]], "publish_year": dt(1916, 7, 1), "type": "Fiction", "copies": 24}
     ]
 
-    # add bulk books
-    book_collection = production.book_collection
-    book_ids = book_collection.insert_many(books).inserted_ids
-
-    # Add book references to authors
-    author_collection.update_many({}, {"$set": {"books": list(book_ids)}})
-
-    print("Data added successfully")
-
+    try:
+        book_collection = production.book_collection
+        book_collection.insert_many(books)
+        print("Books inserted successfully.")
+    except pymongo.errors.BulkWriteError as e:
+        print(f"Bulk write failed: {e.details}")
 
 
 if __name__ == "__main__":
-    # create_author_collection()
+    create_author_validation()
+    create_book_validation()
+    create_data()

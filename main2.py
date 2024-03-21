@@ -158,8 +158,33 @@ authors_and_books = production.author_collection.aggregate([
         }
     }
 ])
-printer.pprint(list(authors_and_books))
+# printer.pprint(list(authors_and_books))
 
+authors_book_count = production.author_collection.aggregate([
+    {
+        "$lookup": {
+            "from": "book_collection",
+            "localField": "_id",
+            "foreignField": "authors",
+            "as": "books"
+        }
+    },
+    {
+        "$addFields": {
+            "total_books": {"$size": "$books"}
+        }
+    },
+    {
+        "$project": {
+            "_id": 0,
+            "first_name": 1,
+            "last_name": 1,
+            "total_books": 1
+        }
+    }
+])
+
+# printer.pprint(list(authors_book_count))
 
 # if __name__ == "__main__":
     # create_author_validation()

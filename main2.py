@@ -1,6 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime as dt
 import os
+import pprint
 import pymongo
 from pymongo import MongoClient
 from bson import datetime as bson_dt
@@ -14,6 +15,7 @@ connection_string = f"mongodb+srv://akeemifedayolag:{password}@tutorial-cluster.
 client = MongoClient(connection_string)
 production = client.production
 
+printer = pprint.PrettyPrinter()
 
 def create_book_validation():
     """
@@ -141,7 +143,25 @@ def create_data():
         print(f"Bulk write failed: {e.details}")
 
 
-if __name__ == "__main__":
-    create_author_validation()
-    create_book_validation()
-    create_data()
+# Retrieve all books that contains letter "a"
+books_containing_a = production.book_collection.find({"title": {"$regex": "a{1}"}})
+printer.pprint(list(books_containing_a))
+
+# Query and Projection Operators
+authors_and_books = production.author_collection.aggregate([
+    {
+        "$lookup": {
+            "from": "book_collection",
+            "localField": "_id",
+            "foreignField": "authors",
+            "as": "books"
+        }
+    }
+])
+printer.pprint(list(authors_and_books))
+
+
+# if __name__ == "__main__":
+    # create_author_validation()
+    # create_book_validation()
+    # create_data()

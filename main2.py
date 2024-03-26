@@ -186,6 +186,53 @@ authors_book_count = production.author_collection.aggregate([
 
 # printer.pprint(list(authors_book_count))
 
+# Return authors with age within 50 - 100
+books_with_old_authors = production.book_collection.aggregate([
+    {
+        "$lookup": {
+            "from": "author_collection",
+            "localField": "authors",
+            "foreignField": "_id",
+            "as": "authors"
+        }
+    },
+    {
+        "$set": {
+            "authors": {
+                "$map": {
+                    "input": "$authors",
+                    "in": {
+                        "age": {
+                            "$dateDiff": {
+                                "startDate": "$$this.birth_date", 
+                                "endDate": "$$NOW",
+                                "unit": "year"
+                            }
+                        },
+                        "first_name": "$$this.first_name",
+                        "last_name": "$$this.last_name",
+                    }
+                }
+            }
+        }
+    },
+    {
+        "$match": {
+            "$and": [
+                {"authors.age": {"$gte": 50}},
+                {"authors.age": {"$lte": 100}}
+            ]
+        }
+    },
+    {
+        "$sort": {
+            "age": 1 # ascending order
+        }
+    }
+])
+
+printer.pprint(books_with_old_authors)
+
 # if __name__ == "__main__":
     # create_author_validation()
     # create_book_validation()

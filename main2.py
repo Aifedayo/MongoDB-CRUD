@@ -233,6 +233,26 @@ books_with_old_authors = production.book_collection.aggregate([
 
 printer.pprint(books_with_old_authors)
 
+
+#############################################
+#          PyMongo Arrow Demo               #
+#############################################
+
+import pyarrow
+from pymongoarrow.api import Schema
+from pymongoarrow.monkey import patch_all
+import pymongoarrow as pma
+from bson import ObjectId
+
+patch_all()
+
+author = Schema({"_id": ObjectId, "first_name": pyarrow.String(), "last_name": pyarrow.String(),
+                "birth_date": dt})
+
+df = production.author_collection.find_pandas_all({}, schema=author)
+print(df.head())
+
+
 # if __name__ == "__main__":
     # create_author_validation()
     # create_book_validation()

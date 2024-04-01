@@ -231,7 +231,7 @@ books_with_old_authors = production.book_collection.aggregate([
     }
 ])
 
-printer.pprint(books_with_old_authors)
+# printer.pprint(books_with_old_authors)
 
 
 #############################################
@@ -246,7 +246,7 @@ from bson import ObjectId
 
 patch_all()
 
-author = Schema({"_id": ObjectId, "first_name": pyarrow.String(), "last_name": pyarrow.String(),
+author = Schema({"_id": ObjectId, "first_name": pyarrow.string(), "last_name": pyarrow.string(),
                 "birth_date": dt})
 
 df = production.author_collection.find_pandas_all({}, schema=author)

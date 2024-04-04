@@ -250,7 +250,13 @@ author = Schema({"_id": ObjectId, "first_name": pyarrow.string(), "last_name": p
                 "birth_date": dt})
 
 df = production.author_collection.find_pandas_all({}, schema=author)
-print(df.head())
+# print(df.head())
+
+arrow_table = production.author_collection.find_arrow_all({}, schema=author)
+# print(arrow_table)
+
+ndarrays = production.author_collection.find_numpy_all({}, schema=author)
+print(ndarrays)
 
 
 

@@ -17,4 +17,37 @@ dbs = client.list_database_names()
 test_db = client["test"]
 collection = test_db.list_collection_names()
 
-print(collection)
+def insert_test_doc():
+    collection = test_db.test # collection name in the test db is also called test
+    test_document = {
+        "name": "Akeem",
+        "type": "Test"
+    }
+    inserted_id = collection.insert_one(test_document).inserted_id
+    print(inserted_id) # BSON object ID
+
+
+
+# TO create a db that doesn't exist
+production = client.production
+person_collection = production.person_collection
+
+def create_documents():
+    first_names = ["Akeem", "Zainab", "Abdullah", "Maryam"]
+    last_names = ["Lagundoye", "Abdulkareem", "Abdulhakeem", "Abass"]
+    ages = [12, 11, 8, 10]
+
+    docs = []
+
+    for first_names, last_names, age in zip(first_names, last_names, ages):
+        doc = {"first_names": first_names,
+               "last_names": last_names, 
+               "age": age}
+        docs.append(doc)
+
+    person_collection.insert_many(docs)
+
+
+if __name__ == "__main__":
+    # insert_test_doc()
+    create_documents()

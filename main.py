@@ -11,3 +11,10 @@ password = os.environ.get("MONGODB_PWD")
 connection_string = f"mongodb+srv://akeemifedayolag:{password}@tutorial-cluster.k5y6y.mongodb.net/?retryWrites=true&w=majority&appName=Tutorial-Cluster"
 
 client = MongoClient(connection_string)
+
+
+dbs = client.list_database_names()
+test_db = client["test"]
+collection = test_db.list_collection_names()
+
+print(collection)

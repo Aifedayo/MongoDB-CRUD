@@ -79,8 +79,7 @@ def get_person_by_id(person_id):
 
 
 def get_age_range(min_age, max_age):
-    query = 
-        {"$and": [
+    query = {"$and": [
             {"age": {"$gte": min_age}},
             {"age": {"$lte": max_age}}
         ]}

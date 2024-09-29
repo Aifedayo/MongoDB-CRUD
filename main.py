@@ -109,6 +109,7 @@ def update_person_by_id(person_id):
         "$rename": {"first_name": "first", "last_name": "last"}
     }
     person_collection.update_one({"_id": _id}, all_updates)
+    person_collection.update_one({"_id": _id}, {"$unset": {"middle_name": ""}})
 
 
 if __name__ == "__main__":

@@ -29,8 +29,8 @@ def insert_test_doc():
 
 
 # TO create a db that doesn't exist
-production = client.production
-person_collection = production.person_collection
+production = client.production # Name of the production database
+person_collection = production.person_collection # Name of the collection in the production database
 
 def create_documents():
     first_names = ["Akeem", "Zainab", "Abdullah", "Maryam"]
@@ -90,6 +90,11 @@ def get_age_range(min_age, max_age):
 
     for person in people:
         printer.pprint(person)
+
+
+def project_columns():
+    columns = {"_id": 0, "first_name": 1, "last_name": 1}
+    people = person_collection.find({}, columns=columns)
 
 
 
